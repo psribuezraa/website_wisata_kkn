@@ -1,0 +1,52 @@
+import Link from "next/link";
+
+const footerLinks = [
+  { href: "#", label: "Village Address" },
+  { href: "#", label: "Contact Info" },
+  { href: "#", label: "Privacy Policy" },
+];
+
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="border-t border-neutral-200 bg-neutral-950 text-neutral-400">
+      <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+          {/* Brand */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-bold text-white tracking-tight">
+              Desa Wisata
+            </h3>
+            <p className="text-sm leading-relaxed text-neutral-500 max-w-xs">
+              Authentic village experiences, sustainable tourism, and unforgettable memories.
+            </p>
+          </div>
+
+          {/* Links */}
+          <div>
+            <ul className="space-y-3">
+              {footerLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-neutral-400 transition-colors duration-200 hover:text-primary-400"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Copyright */}
+          <div className="flex items-end md:justify-end">
+            <p className="text-xs text-neutral-600">
+              &copy; {currentYear} Desa Wisata. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
