@@ -3,23 +3,72 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/wisata", label: "Destinations" },
-  { href: "/layanan", label: "Homestays" },
+  { href: "/#destinations", label: "Destinations" },
+  { href: "/#accommodations", label: "Homestays" },
+  { href: "/#kuliner", label: "Kuliner" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("/");
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+
+      // 1. If at the very top, it's Home
+      if (window.scrollY < 100) {
+        setActiveSection("/");
+        return;
+      }
+
+      // 2. If at the very bottom of the page, force highlight the last section (Kuliner)
+      // This fixes the issue where short sections at the bottom don't trigger the highlight
+      if (window.innerHeight + Math.round(window.scrollY) >= document.documentElement.scrollHeight - 100) {
+        setActiveSection("/#kuliner");
+        return;
+      }
+
+      // 3. Otherwise, find which section is currently in view
+      const sections = ["destinations", "accommodations", "kuliner"];
+      let currentSection = "/";
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          
+          // A section is active if:
+          // A. Its top is in the upper half of the screen
+          // B. It's a tall section that is currently occupying the middle of the screen
+          if (
+            (rect.top >= 0 && rect.top <= window.innerHeight / 2) || 
+            (rect.top < 0 && rect.bottom > window.innerHeight / 2)
+          ) {
+            currentSection = "/#" + section;
+            break; // Found the active one, stop checking
+          }
+        }
+      }
+
+      setActiveSection(currentSection);
     };
-    window.addEventListener("scroll", handleScroll);
+    
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    // Set initial active section based on hash or current position
+    if (window.location.hash) {
+      setActiveSection("/" + window.location.hash);
+    } else {
+      handleScroll();
+    }
+    
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -50,23 +99,33 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <ul className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = activeSection === link.href;
             return (
-              <li key={link.href}>
+              <li key={link.href} className="relative">
                 <Link
                   href={link.href}
-                  className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  onClick={() => setActiveSection(link.href)}
+                  className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 z-10 block ${
                     showSolid
                       ? isActive
-                        ? "text-white bg-primary-600"
-                        : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100"
+                        ? "text-white"
+                        : "text-neutral-600 hover:text-neutral-900"
                       : isActive
-                        ? "text-white bg-white/20 backdrop-blur-sm"
-                        : "text-white/80 hover:text-white hover:bg-white/10"
+                        ? "text-white"
+                        : "text-white/80 hover:text-white"
                   }`}
                 >
                   {link.label}
                 </Link>
+                {isActive && (
+                  <motion.div
+                    layoutId="nav-pill"
+                    className={`absolute inset-0 rounded-full z-0 ${
+                      showSolid ? "bg-primary-600" : "bg-white/20 backdrop-blur-sm"
+                    }`}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
               </li>
             );
           })}
@@ -123,12 +182,15 @@ export default function Navbar() {
       >
         <ul className="flex flex-col gap-1 px-5 py-4">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = activeSection === link.href;
             return (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={() => {
+                    setActiveSection(link.href);
+                    setMobileOpen(false);
+                  }}
                   className={`block rounded-lg px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
                     isActive
                       ? "text-primary-700 bg-primary-50"
