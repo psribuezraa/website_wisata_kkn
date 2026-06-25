@@ -19,9 +19,9 @@ async function fetchSheet<T>(sheetName: string): Promise<T[]> {
     return [];
   }
 
-  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&cb=${Date.now()}`;
 
-  const res = await fetch(url, { next: { revalidate: 10 } }); // ISR: revalidate setiap 10 detik
+  const res = await fetch(url, { next: { revalidate: 100 } }); // ISR: revalidate setiap 100 detik
 
   if (!res.ok) {
     console.error(`[sheets] Gagal fetch sheet "${sheetName}": ${res.status}`);
@@ -42,6 +42,11 @@ async function fetchSheet<T>(sheetName: string): Promise<T[]> {
 
   if (data.length === 0) {
     console.warn(`[sheets] Data dari tab "${sheetName}" kosong.`);
+  } else {
+    // Debug log to see the parsed headers from the first row
+    if (sheetName === "Wisata") {
+      console.log("[DEBUG sheets] Parsed Row 0:", data[0]);
+    }
   }
 
   return data;
