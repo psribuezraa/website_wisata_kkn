@@ -17,7 +17,6 @@ export interface Wisata {
 /** Sheet 2: Penginapan */
 export interface Penginapan {
   nama_penginapan: string;
-  nama_pemilik: string;
   deskripsi_id: string;
   deskripsi_en: string;
   harga: string;

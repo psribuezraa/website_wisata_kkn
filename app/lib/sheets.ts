@@ -21,7 +21,9 @@ async function fetchSheet<T>(sheetName: string): Promise<T[]> {
 
   const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}&cb=${Date.now()}`;
 
-  const res = await fetch(url, { next: { revalidate: 100 } }); // ISR: revalidate setiap 100 detik
+  const res = await fetch(url, {
+    next: { tags: ["sheets"] }, // Cache permanen, hanya di-revalidate oleh Webhook
+  });
 
   if (!res.ok) {
     console.error(`[sheets] Gagal fetch sheet "${sheetName}": ${res.status}`);
@@ -36,6 +38,7 @@ async function fetchSheet<T>(sheetName: string): Promise<T[]> {
       const h = header.trim().toLowerCase();
       // Menormalkan header yang mungkin ditulis "tampil_di_beranda (Ya/Tidak)" atau ada spasi/enter
       if (h.includes("tampil_di_beranda")) return "tampil_di_beranda";
+      if (h.includes("no_whatsapp")) return "no_whatsapp";
       return header.trim();
     },
   });

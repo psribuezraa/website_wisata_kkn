@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { Penginapan } from "@/app/types";
 import { getValidImg } from "@/app/lib/utils";
 
@@ -34,9 +35,10 @@ export default function AccommodationCard({ stay }: { stay: Penginapan }) {
 
   const hasGmaps = isValidLink(stay.link_gmaps);
   const validWa = getValidWa(stay.no_whatsapp);
+  ``;
   const waLink = validWa
     ? `https://wa.me/${validWa}?text=${encodeURIComponent(
-        `Halo ${stay.nama_pemilik}, saya tertarik untuk memesan penginapan ${stay.nama_penginapan}. Apakah tersedia?`
+        `Halo ${stay.nama_penginapan}, saya ingin memesan kamar.`,
       )}`
     : null;
 
@@ -44,10 +46,11 @@ export default function AccommodationCard({ stay }: { stay: Penginapan }) {
     <div className="w-[85vw] sm:w-[360px] shrink-0 snap-center group bg-white rounded-2xl overflow-hidden border border-neutral-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
       {/* Image */}
       <div className="relative aspect-[3/2] overflow-hidden">
-        <img
+        <Image
           src={getValidImg(stay.link_gambar, "/images/stay-cabin.png")}
           alt={stay.nama_penginapan}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
@@ -87,30 +90,10 @@ export default function AccommodationCard({ stay }: { stay: Penginapan }) {
                   />
                 </svg>
                 <span className="text-neutral-700 font-medium text-left">
-                  {stay.harga} <span className="font-normal text-neutral-500 text-xs">/ night</span>
-                </span>
-              </div>
-            )}
-
-            {/* Nama Pemilik */}
-            {stay.nama_pemilik && stay.nama_pemilik !== "(kosong)" && stay.nama_pemilik !== "-" && (
-              <div className="flex items-center gap-2.5 text-sm w-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="h-4 w-4 text-primary-600 shrink-0"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                  />
-                </svg>
-                <span className="text-neutral-600 text-left">
-                  {stay.nama_pemilik}
+                  {stay.harga}{" "}
+                  <span className="font-normal text-neutral-500 text-xs">
+                    / night
+                  </span>
                 </span>
               </div>
             )}

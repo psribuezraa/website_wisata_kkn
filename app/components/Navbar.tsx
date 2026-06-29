@@ -63,11 +63,13 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     
     // Set initial active section based on hash or current position
-    if (window.location.hash) {
-      setActiveSection("/" + window.location.hash);
-    } else {
-      handleScroll();
-    }
+    setTimeout(() => {
+      if (window.location.hash) {
+        setActiveSection("/" + window.location.hash);
+      } else {
+        handleScroll();
+      }
+    }, 0);
     
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);

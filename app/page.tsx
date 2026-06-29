@@ -51,7 +51,6 @@ const fallbackDestinations: Wisata[] = [
 const fallbackAccommodations: Penginapan[] = [
   {
     nama_penginapan: "Lumbung Wooden Cabin",
-    nama_pemilik: "Pak Budi",
     deskripsi_id: "Kabin kayu tradisional yang nyaman.",
     deskripsi_en: "A cozy traditional wooden cabin.",
     harga: "Rp 450.000 / Malam",
@@ -62,7 +61,6 @@ const fallbackAccommodations: Penginapan[] = [
   },
   {
     nama_penginapan: "Tropical Garden Suite",
-    nama_pemilik: "Ibu Sari",
     deskripsi_id: "Suite dengan taman tropis yang indah.",
     deskripsi_en: "A suite with a beautiful tropical garden.",
     harga: "Rp 650.000 / Malam",
@@ -121,6 +119,55 @@ export default async function Home() {
 
   return (
     <>
+      {/* ===== JSON-LD Structured Data (SEO) ===== */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TouristDestination",
+            "name": "Desa Wisata Nanggulan",
+            "description":
+              "Destinasi wisata alam, kuliner otentik, dan penginapan nyaman di Desa Nanggulan, Kulon Progo, Yogyakarta.",
+            // TODO: Ganti dengan domain asli setelah deploy
+            "url": "https://wisata-nanggulan.vercel.app",
+            "touristType": [
+              "Nature lover",
+              "Cultural tourist",
+              "Food tourist",
+            ],
+            "geo": {
+              "@type": "GeoCoordinates",
+              // TODO: Ganti dengan koordinat GPS asli Desa Nanggulan
+              "latitude": 0,
+              "longitude": 0,
+            },
+            "image": "/images/hero-bg.png",
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "Desa Wisata Nanggulan",
+            "description":
+              "Platform digital resmi Desa Nanggulan. Temukan destinasi wisata alam, kuliner otentik, homestay, dan layanan masyarakat desa.",
+            // TODO: Ganti dengan domain asli setelah deploy
+            "url": "https://wisata-nanggulan.vercel.app",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Nanggulan",
+              "addressRegion": "Kulon Progo",
+              "addressCountry": "ID",
+            },
+            "image": "/images/hero-bg.png",
+          }),
+        }}
+      />
+
       {/* ===== HERO ===== */}
       <section className="relative h-[85vh] min-h-[540px] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
